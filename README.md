@@ -115,9 +115,12 @@ map.on('move', project); map.on('resize', project); map.on('load', project);
 
 展示現場常沒有網路，所以展示包自帶世運周邊的圖磚。
 
+腳本在本 repo 的 `minimal-example/scripts/fetch-offline-map.mjs`(與主專案同一支，只改了輸出目錄):
+
 ```bash
-node scripts/fetch-offline-map.mjs            # 下載到 offline-map/,已存在則跳過
-node scripts/fetch-offline-map.mjs --refresh  # 重抓
+cd minimal-example
+npm run fetch-map                  # 下載到 public/map/,已存在則跳過
+npm run fetch-map -- --refresh     # 重抓
 ```
 
 | 項目 | 內容 |
@@ -128,11 +131,11 @@ node scripts/fetch-offline-map.mjs --refresh  # 重抓
 | 鏡頭限制 | `style.metadata['offline:maxBounds']`(內圈 ~12 km)、`'offline:minZoom'`(12),MapPage 據此 `setMaxBounds` / `setMinZoom`,拖不出有圖磚的範圍 |
 | 大小 | 約 24 MB |
 
-使用方式：把 `offline-map/` 放到網站底下(展示包是 `app/map/`),設 `VITE_MAP_STYLE=map/style.json`。
+使用方式：建立 `minimal-example/.env.local`,寫入 `VITE_MAP_STYLE=map/style.json`,再 `npm run dev` / `npm run build`;`public/map/` 會原樣發布到 `dist/map/`。(主專案則由 `pack:demo` 把圖磚放進展示包的 `app/map/`。)
 
 **為什麼要 `resolveStyle()`**:MapLibre 不解析 style 內的相對網址。圖磚由 worker 抓，相對路徑會被當成相對 worker 檔(`assets/`)而 404。所以相對網址的樣式由前端先抓下來，把 `sprite` / `glyphs` / `sources.*.tiles|url` 補成以 `style.json` 所在目錄為基準的絕對網址。用**字串拼接**而不是 `new URL()`——URL 會把 `{z}`、`{fontstack}` 的大括號編碼掉。
 
-要換範圍：改 `fetch-offline-map.mjs` 頂端的 `DOWNLOAD_BBOX` / `MAX_BOUNDS` / `MIN_ZOOM`。
+要換範圍：改 `minimal-example/scripts/fetch-offline-map.mjs` 頂端的 `DOWNLOAD_BBOX` / `MAX_BOUNDS` / `MIN_ZOOM`。
 
 ## 5. 設定
 
@@ -150,7 +153,7 @@ node scripts/fetch-offline-map.mjs --refresh  # 重抓
 | `src/demo/MapPage.tsx` | **地圖首頁本體**。檔頭註解記錄了所有設計決策 |
 | `src/demo/MapPage.css` | 只有地圖頁特有的樣式;面板、標記樣式來自 `src/ui/` |
 | `src/demo/demoScenes.ts` | 點位資料(hotspot)。`DEMO_INTERSECTIONS` 是號誌路口座標(取自 VISSIM 資料集) |
-| `scripts/fetch-offline-map.mjs` | 離線圖磚下載。內含一個極簡 MVT(protobuf)解析器，用來算實際用到的字元 |
+| `scripts/fetch-offline-map.mjs` | 離線圖磚下載(本 repo 的 `minimal-example/scripts/` 有一份)。內含一個極簡 MVT(protobuf)解析器，用來算實際用到的字元 |
 | `scripts/pack-demo.mjs` | 打離線展示包，會自動呼叫上面的腳本並把圖磚放進 `app/map/` |
 | `src/App.tsx` | 掛載 MapPage 與交接(搜尋 `mapEntered` / `mapHandoff`) |
 | `src/pages/StreamPage.tsx` | 接收交接(搜尋 `initialFocusPrimPath`) |

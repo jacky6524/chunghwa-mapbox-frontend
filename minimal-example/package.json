@@ -6,7 +6,8 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc --noEmit && vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "fetch-map": "node scripts/fetch-offline-map.mjs"
     },
     "dependencies": {
         "maplibre-gl": "6.15.0",
