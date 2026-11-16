@@ -1,4 +1,5 @@
 node_modules/
 dist/
 .env.local
-public/map/
+# fetch-map 下載的離線底圖(約 24 MB),各自用 npm run fetch-map 產生
+minimal-example/public/map/
