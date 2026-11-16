@@ -1,0 +1,86 @@
+html, body, #root {
+    margin: 0;
+    height: 100%;
+    font-family: 'Noto Sans TC', sans-serif;
+}
+
+.map-view {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: #1e2939;
+}
+
+.map-view__map {
+    position: absolute;
+    inset: 0;
+}
+
+/* 標記層整層不吃滑鼠(地圖才能拖曳),標記本身才吃 */
+.map-view__markers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* 自己做 translate(-50%,-50%) 置中 —— 這也是不用 maplibre Marker 的原因:
+   Marker 會用 transform 定位,跟元件自己的 transform 打架 */
+.marker {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.marker__dot {
+    width: 22px;
+    height: 22px;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.marker--alert .marker__dot { background: #e7000b; }
+.marker--intersection .marker__dot { background: #1e5cff; }
+.marker.is-selected .marker__dot { transform: scale(1.35); }
+
+.marker__label {
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.85);
+    color: #1e2939;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.map-view__toolbar {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 20;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+}
+
+.map-view__notice {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    padding: 6px 14px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.85);
+    color: #4a5565;
+    font-size: 13px;
+}
